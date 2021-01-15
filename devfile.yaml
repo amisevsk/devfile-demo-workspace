@@ -2,11 +2,14 @@ schemaVersion: 2.0.0
 metadata:
   name: devfile-demo-workspace
 projects:
-  - name: devfile-demo-workspace    
+  - name: devfile-demo-workspace
     git:
       remotes:
         origin: "https://github.com/amisevsk/devfile-demo-workspace.git"
 components:
+  - name: workspace-sync
+    container:
+      image: quay.io/amisevsk/workspace-sync:dev
   - name: theia
     plugin:
       kubernetes:
@@ -18,9 +21,11 @@ components:
         name: machine-exec
         namespace: devworkspace-plugins
 commands:
-  - id: say-hello
+  - id: sync-devfile
     exec:
-      component: plugin
-      commandLine: echo "Hello from $(pwd)"
-      workingDir: ${PROJECTS_ROOT}/project/app
-
+      component: workspace-sync
+      commandLine: "workspace-sync --sync-devfile"
+  - id: sync-template
+    exec:
+      component: workspace-sync
+      commandLine: "workspace-sync --sync-template"
