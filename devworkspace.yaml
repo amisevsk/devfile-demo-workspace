@@ -1,0 +1,35 @@
+kind: DevWorkspace
+apiVersion: workspace.devfile.io/v1alpha2
+metadata:
+  name: devfile-demo-workspace
+spec:
+  started: true
+  template:
+    projects:
+      - name: devfile-demo-workspace
+        git:
+          remotes:
+            origin: "https://github.com/amisevsk/devfile-demo-workspace.git"
+    components:
+      - name: workspace-sync
+        container:
+          image: quay.io/amisevsk/workspace-sync:dev
+      - name: theia
+        plugin:
+          kubernetes:
+            name: theia-next
+            namespace: devworkspace-plugins
+      - name: terminal
+        plugin:
+          kubernetes:
+            name: machine-exec
+            namespace: devworkspace-plugins
+    commands:
+      - id: sync-devfile
+        exec:
+          component: workspace-sync
+          commandLine: "workspace-sync --sync-devfile"
+      - id: sync-template
+        exec:
+          component: workspace-sync
+          commandLine: "workspace-sync --sync-template"
